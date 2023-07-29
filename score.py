@@ -3,6 +3,7 @@ import pickle
 import os
 from os.path import join
 import numpy as np
+import sys
 
 def main():
     """
@@ -46,6 +47,11 @@ def main():
 
     hyp = np.zeros_like(test_labels)
     top2_correct = np.zeros((n_test,),'bool')
+
+
+    outfile_nn = "nn_" + dataset + ".pkl"
+    num_save = 100
+    out_indices = np.zeros((n_test, num_save),dtype='uint32')
     
     ctr = 0
     
@@ -53,6 +59,9 @@ def main():
         full = join(d,f)
         v = pickle.load(open(full,'rb'))
 
+        print(v.shape, full)
+        sys.stdout.flush()
+        
         n_testi, tmp = v.shape
         if tmp != n_train:
             raise ValueError(f"bad shape:{v.shape} n_train:{n_train}")
@@ -64,6 +73,9 @@ def main():
 
         idx_range = slice(ctr, ctr + n_testi)
 
+        out_indices[idx_range,:] = args[:, :num_save]
+        
+
         e0 = train_labels[args[:,0]] == test_labels[idx_range]
         e1 = train_labels[args[:,1]] == test_labels[idx_range]
         corr = np.logical_or(e0,e1)
@@ -73,6 +85,12 @@ def main():
     
         ctr += n_testi
 
+
+    pickle.dump(
+        out_indices,
+        open(outfile_nn,'wb'))
+    print("WROTE:",outfile_nn)
+        
     acc = np.mean(hyp == test_labels)
     top2 = np.mean(top2_correct)
     res = {
