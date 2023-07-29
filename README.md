@@ -1,6 +1,13 @@
 # gzip-knn
 
-Reimplentation of paper using gzip + knn for text classification
+Reimplentation of [npc_gzip](https://github.com/bazingagin/npc_gzip) of paper using `gzip + knn` for text classification.
+
+**In progres...**
+
+## prepare data
+
+```
+```
 
 ## datasets info
 
@@ -23,4 +30,27 @@ DengueFilipino        4.015      4.015       0.534384           0.120105        
 SwahiliNews          22.207      7.338      62.5241             1.21411          2196.51
 SogouNews           450         60        1357.86             201.166            2780.35
 
+```
+
+## Quick example
+
+Run on subset of small dataset to make sure it's working,
+
+```bash
+limit_train=250
+limit_test=50
+
+#
+datadir=prepared
+
+LIMITS="--limit_train $limit_train --limit_test $limit_test"
+
+outdir="/tmp/out"
+
+# dataset name:
+name=kirnews
+
+python compute.py --dataset $name --datadir $datadir $LIMITS --outdir $outdir --method gziplength
+
+python score.py --dataset $name --datadir $datadir $LIMITS --dir $outdir
 ```
