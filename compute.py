@@ -31,11 +31,23 @@ def do_block(test_data, train_data,
     D = np.zeros((n_test,n_train))
 
     assert(method in (
+        'orig',
         'precomputed',
         'gziplength',
+        'zeros',
     ))
+
+    #orig
+    if method == 'orig':
+        for i,t1 in enumerate(test_data):
+            l1 = clen(t1.encode('utf8'))
+            
+            for j, t2 in enumerate(train_data):
+                l2 = clen(t2.encode('utf8'))
+                l12 = clen( (t1 + ' ' + t2).encode('utf8') )
+                D[i,j] = NCD(l1, l2, l12)
     
-    if method == 'precomputed':
+    elif method == 'precomputed':
         for i,t1 in enumerate(test_data):
             l1 = clen(t1)
             
@@ -53,6 +65,11 @@ def do_block(test_data, train_data,
                 l2 = precomputed_lengths[j]
                 l12 = g.length2(t2)
                 D[i,j] = NCD(l1, l2, l12)
+                
+    elif method == 'zeros':
+        #D is already zeros
+        pass
+    
     else:
         raise ValueError('bad method:' + repr(method))
 
@@ -88,8 +105,12 @@ def main():
     
     parser.add_argument('--method',
                         default='gziplength',
-                        choices = ['precomputed',
-                                   'gziplength'])
+                        choices = [
+                            'orig',
+                            'precomputed',
+                            'gziplength',
+                            'zeros',
+                        ])
     parser.add_argument('--splitsize', default=500, type=int)
 
     parser.add_argument('--limit_train', default=None, type=int)
@@ -97,6 +118,9 @@ def main():
     
     args = parser.parse_args()
 
+    method = args.method
+    
+    
     outdir_ds = join(args.outdir,
                      args.dataset)
     
@@ -108,8 +132,14 @@ def main():
         args.dataset + ".pkl"),'rb'))
     print(ds.keys())
 
-    train_data = [t.encode('utf8') for t in ds['train_data']]
-    test_data = [t.encode('utf8') for t in ds['test_data']]
+    if method in ('orig','zeros'):
+        pass #keep as strings
+        train_data = ds['train_data']
+        test_data  = ds['test_data']
+    else:
+        # convert strings to bytes
+        train_data = [t.encode('utf8') for t in ds['train_data']]
+        test_data  = [t.encode('utf8') for t in ds['test_data']]
 
     if args.limit_train != None:
         train_data = train_data[:args.limit_train]
@@ -121,9 +151,12 @@ def main():
     n_test  = len(test_data)
 
     #pre-process train_data
-    train_lengths = []
-    for j,t2 in enumerate(tqdm(train_data)):
-        train_lengths.append(clen(t2))
+    if method in ('orig','zeros'):
+        train_lengths = None # not used
+    else:
+        train_lengths = []
+        for j,t2 in enumerate(tqdm(train_data)):
+            train_lengths.append(clen(t2))
 
     splitsize = args.splitsize
     start_indices = list(range(0, n_test, splitsize))
@@ -137,8 +170,6 @@ def main():
 
     max_workers = ncpu
 
-    method = args.method
-
     print(json.dumps(dict(
         n_train = n_train,
         n_test = n_test,
@@ -146,6 +177,7 @@ def main():
         ncpu = ncpu,
         max_workers = max_workers,
         method = method,
+        splitsize = splitsize,
     )))
 
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
