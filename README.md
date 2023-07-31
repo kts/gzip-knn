@@ -6,14 +6,33 @@ Reimplentation of [npc_gzip](https://github.com/bazingagin/npc_gzip) of paper us
 
 ## prepare data
 
+The main code reads all the data from `pickle` files.  `prepare_data.py` loads data via the `data.py` file in the `npc_gzip` repo.
+
 ```
+mkdir prepared
+PYTHONPATH=/path/to/npc_gzip python prepare_data.py --outdir prepared
 ```
 
 ## datasets info
 
-`python datasets_info.py` should print,
+`python datasets_info.py --datadir prepared` should print,
 
 ```
+name                  tr     uniq  %dup       te    uniq  %dup      tr+te  %
+---------------  -------  -------  ------  -----  ------  ------  -------  ------
+AG_NEWS           120000   120000  0.0%     7600    7600  0.0%          0  0.0%
+DBpedia           560000   560000  0.0%    70000   70000  0.0%          0  0.0%
+YahooAnswers     1400000  1400000  0.0%    60000   60000  0.0%          0  0.0%
+20News             11314    11314  0.0%     7532    7532  0.0%          0  0.0%
+ohsumed             3357     3357  0.0%     4043    4043  0.0%          0  0.0%
+R8                  5485     5427  1.1%     2189    2176  0.6%          4  0.2%
+R52                 6532     6454  1.2%     2568    2553  0.6%          6  0.2%
+KinyarwandaNews    17014     9199  45.9%    4254    2702  36.5%       643  23.8%
+KirundiNews         3689     1791  51.5%     923     698  24.4%       631  90.4%
+DengueFilipino      4015     3951  1.6%     4015    3951  1.6%       3951  100.0%
+SwahiliNews        22207    22207  0.0%     7338    7338  0.0%         34  0.5%
+SogouNews         450000   450000  0.0%    60000   60000  0.0%          0  0.0%
+
 
 name               train(K)    test(K)    len pkl(MB)    len dist mat(GB)    ave len data
 ---------------  ----------  ---------  -------------  ------------------  --------------
@@ -29,7 +48,6 @@ KirundiNews           3.689      0.923       7.79987            0.0253688       
 DengueFilipino        4.015      4.015       0.534384           0.120105           62.737
 SwahiliNews          22.207      7.338      62.5241             1.21411          2196.51
 SogouNews           450         60        1357.86             201.166            2780.35
-
 ```
 
 ## Quick example
