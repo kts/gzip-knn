@@ -34,23 +34,19 @@ SogouNews           450         60        1357.86             201.166           
 
 ## Quick example
 
-Run on subset of small dataset to make sure it's working,
+Run on subset of small dataset to make sure it's working (<2 seconds),
 
 ```bash
-limit_train=250
-limit_test=50
-
-#
-datadir=prepared
-
-LIMITS="--limit_train $limit_train --limit_test $limit_test"
-
-outdir="/tmp/out"
-
-# dataset name:
-name=kirnews
-
-python compute.py --dataset $name --datadir $datadir $LIMITS --outdir $outdir --method gziplength
-
-python score.py --dataset $name --datadir $datadir $LIMITS --dir $outdir
+time python compute.py --dataset kirnews.pkl --splitsize 10 --outfile /tmp/nn_kirnews.pkl --limit_train 250 --limit_test 50
 ```
+
+Full `kirnews` dataset (~1 min on 8-core laptop):
+
+```bash
+time python compute.py --dataset kirnews.pkl --splitsize 10 --outfile /tmp/nn_kirnews.pkl --limit_train 250 --limit_test 50
+```
+
+* prints top-1 accuracy, stores `--num_save=100` top nearest-neighbor indices so you can score using other `k`.
+
+## Notes
+
