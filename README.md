@@ -55,16 +55,16 @@ SogouNews           450         60        1357.86             201.166           
 Run on subset of small dataset to make sure it's working (<2 seconds),
 
 ```bash
-time python compute.py --dataset kirnews.pkl --splitsize 10 --outfile /tmp/nn_kirnews.pkl --limit_train 250 --limit_test 50
+python compute.py --dataset kirnews.pkl --splitsize 10 --outfile /tmp/nn_kirnews.pkl --limit_train 250 --limit_test 50
 ```
 
 Full `kirnews` dataset (~1 min on 8-core laptop):
 
 ```bash
-time python compute.py --dataset kirnews.pkl --splitsize 10 --outfile /tmp/nn_kirnews.pkl --limit_train 250 --limit_test 50
+python compute.py --dataset kirnews.pkl --outfile /tmp/nn_kirnews.pkl
 ```
 
-* prints top-1 accuracy, stores `--num_save=100` top nearest-neighbor indices so you can score using other `k`.
+* prints top-1 accuracy, stores `--num_save=100` top nearest-neighbor indices so you can score using other `k`. So, the `outfile` is a `numpy` array of shape `(num_test, num_save)`, indexes (into training data) of the top `num_save` nearest neighbors.
 
 ## Notes
 
