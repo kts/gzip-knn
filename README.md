@@ -113,9 +113,9 @@ k    decr    rand
 
 `decr` and `rand` are two approaches to breaking ties in `kNN`
 
-* `desr`: decrease `k` until there is no tie.
+* `decr`: decrease `k` until there is no tie. If we compute results for `k=1,2,...` in-order, then for a tie on `k`, we take the chosen label for `k-1`.
 
-* `rand`: randomly select one of the ties. This this computed by giving a score of `1/num_ties` - i.e. taking the expected value.
+* `rand`: randomly select one of the ties. This this computed by giving a score of `1/num_ties` - i.e. taking the expected value (and `0` for when the correct label is not in the tie-set).
 
 
 See [results.txt](results.txt) for all.
