@@ -35,7 +35,7 @@ def main():
             "DBpedia",
             "YahooAnswers",
             "20News",
-        
+
             "ohsumed",
             "R8",
             "R52",

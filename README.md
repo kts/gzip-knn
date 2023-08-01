@@ -1,8 +1,10 @@
 # gzip-knn
 
-Reimplentation of [npc_gzip](https://github.com/bazingagin/npc_gzip) of paper using `gzip + knn` for text classification.
+Reimplentation of [npc_gzip](https://github.com/bazingagin/npc_gzip) of `gzip + knn` method for text classification. Paper: *“Low-Resource” Text Classification: A Parameter-Free Classification Method with Compressors* by Jiang et al. [link](https://aclanthology.org/2023.findings-acl.426/).
 
-**In progres...**
+See my blog posts for context: [Part I](https://kenschutte.com/gzip-knn-paper/), [Part II](https://kenschutte.com/gzip-knn-paper2).
+
+**In progress...**
 
 ## prepare data
 
@@ -64,7 +66,51 @@ Full `kirnews` dataset (~1 min on 8-core laptop):
 python compute.py --dataset kirnews.pkl --outfile /tmp/nn_kirnews.pkl
 ```
 
-* prints top-1 accuracy, stores `--num_save=100` top nearest-neighbor indices so you can score using other `k`. So, the `outfile` is a `numpy` array of shape `(num_test, num_save)`, indexes (into training data) of the top `num_save` nearest neighbors.
+* prints top-1 accuracy.
 
-## Notes
+* stores `--num_save=100` top nearest-neighbor indices so you can score using other `k`. So, the `outfile` is a `numpy` array of shape `(num_test, num_save)`, indexes (into training data) of the top `num_save` nearest neighbors.
+
+## Results
+
+```bash
+# reads:
+#  $dir_nn/$name.pkl and
+#  $dir_data/$name.pkl
+python score.py --dir_nn nn --dir_data prepared > results.txt
+```
+
+Prints summary,
+
+```
+      AG_NEWS    DBpedia    YahooAnswers    20News    ohsumed    R8     R52
+----  ---------  ---------  --------------  --------  ---------  -----  -----
+knn1  0.876      0.942      0.485           0.607     0.365      0.913  0.852
+top2  0.937      0.970      0.622           0.685     0.481      0.952  0.889
+
+
+      filipino    kirnews    kinnews    swahili    SogouNews
+----  ----------  ---------  ---------  ---------  -----------
+knn1  0.999       0.858      0.835      0.850      0.951
+top2  1.000       0.906      0.891      0.927      0.973
+```
+
+and prints details for different k for each dataset. For example, one dataset
+
+```
+AG_NEWS
+k    decr    rand
+---  ------  ------
+1    0.876   0.876
+2    0.876   0.863
+3    0.891   0.888
+4    0.892   0.889
+5    0.895   0.889
+11   0.896   0.893
+21   0.896   0.889
+35   0.898   0.883
+51   0.898   0.878
+```
+
+
+See [results.txt](results.txt) for all.
 
