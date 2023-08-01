@@ -111,6 +111,12 @@ k    decr    rand
 51   0.898   0.878
 ```
 
+`decr` and `rand` are two approaches to breaking ties in `kNN`
+
+* `desr`: decrease `k` until there is no tie.
+
+* `rand`: randomly select one of the ties. This this computed by giving a score of `1/num_ties` - i.e. taking the expected value.
+
 
 See [results.txt](results.txt) for all.
 
